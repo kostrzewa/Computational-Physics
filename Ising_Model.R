@@ -1,4 +1,6 @@
-#Function: H_get. Calculate the energy of one spin.
+ptm <- proc.time()
+
+#Function: H_get. Calculate the energy of one spin. Here we applied the boundary condirion for the first and last collumn and the first and last row, otherwise we compare it to their neighbor. 
 H_get<-function(y,x,s)
   {
   h=0
@@ -14,7 +16,6 @@ H_get<-function(y,x,s)
   {
     h=h+s[y,x]*s[y,x-1]+s[y,x]*s[y,x+1]
   }
-  
   if(y==1)
   {
     h=h+s[1,x]*s[nrow(s),x]+s[1,x]*s[2,x]
@@ -31,7 +32,7 @@ H_get<-function(y,x,s)
 }
 
   
-# Metropolis algorithm 
+# Metropolis algorithm. We apply two conditions to flip the spins.
 MA<-function(s,temp)
 {
   y<-sample(1:nrow(s),1)
@@ -54,17 +55,17 @@ MA<-function(s,temp)
 }
 
 
-#Generates 1000000 random 35*35 configruations and get image of everyone but this spend about 17.8s for 1*10^6.  
-e<-sample(c(-1,1),35*35,replace=T)
-s<-matrix(e,35,35)
-l=0
-nc<-1000*35*35
+#Generates 1000000 random 35*35 configruations and get image of every matrix. Without generating the images, it will spend about 17.8s for 1*10^6.  
+e<-sample(c(-1,1),4*4,replace=T)
+s<-matrix(e,4,4)
+nc<-1000000*4*4
 for (n in 1 : nc)
   {
     s=MA(s,0.0001)
-    image(s)
+    #image(s)
   }
-  
+
+proc.time() - ptm  
   
 #Total H of systems.
 get_TH<-function (S)
@@ -109,7 +110,7 @@ return(-H)
 }
 
   
-#|m|
+#calculation of |m|
 m_ab<-function(s)
 {
   H<-0
@@ -125,7 +126,7 @@ m_ab<-function(s)
 }
 
   
-#m bar R=J/T
+#calculation of m_bar, with R=J/T
 m_bar<-function(N,T,a,b,R)
 {
 e<-sample(c(-1,1),a*b,replace=T)
